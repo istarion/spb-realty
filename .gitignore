@@ -87,3 +87,6 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+/spb-realty.iml
+/parser-gorod-gov-spb-ru/parser-gorod-gov-spb-ru.iml
+/spb-realty-commons/spb-realty-commons.iml

@@ -11,9 +11,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="parser-gorod-gov-spb-ru" target="9.0" />
-      <module name="spb-realty" target="9.0" />
-      <module name="spb-realty-commons" target="9.0" />
+      <module name="parser-gorod-gov-spb-ru" target="1.9" />
+      <module name="spb-realty" target="1.9" />
+      <module name="spb-realty-commons" target="1.9" />
     </bytecodeTargetLevel>
   </component>
 </project>
