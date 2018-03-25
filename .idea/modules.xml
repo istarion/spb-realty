@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/parser-csv/parser-csv.iml" filepath="$PROJECT_DIR$/parser-csv/parser-csv.iml" />
       <module fileurl="file://$PROJECT_DIR$/parser-gorod-gov-spb-ru/parser-gorod-gov-spb-ru.iml" filepath="$PROJECT_DIR$/parser-gorod-gov-spb-ru/parser-gorod-gov-spb-ru.iml" />
+      <module fileurl="file://$PROJECT_DIR$/parsermapinfo/parsermapinfo.iml" filepath="$PROJECT_DIR$/parsermapinfo/parsermapinfo.iml" />
       <module fileurl="file://$PROJECT_DIR$/spb-realty.iml" filepath="$PROJECT_DIR$/spb-realty.iml" />
       <module fileurl="file://$PROJECT_DIR$/spb-realty-commons/spb-realty-commons.iml" filepath="$PROJECT_DIR$/spb-realty-commons/spb-realty-commons.iml" />
     </modules>

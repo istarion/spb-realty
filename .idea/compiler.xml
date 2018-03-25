@@ -6,12 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="parser-csv" />
         <module name="parser-gorod-gov-spb-ru" />
+        <module name="parsermapinfo" />
         <module name="spb-realty-commons" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="parser-csv" target="1.9" />
       <module name="parser-gorod-gov-spb-ru" target="1.9" />
+      <module name="parsermapinfo" target="1.9" />
       <module name="spb-realty" target="1.9" />
       <module name="spb-realty-commons" target="1.9" />
     </bytecodeTargetLevel>

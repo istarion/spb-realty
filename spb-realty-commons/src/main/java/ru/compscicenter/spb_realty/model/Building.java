@@ -9,6 +9,7 @@ public final class Building {
     private ObjectId id;
     private String address;
     private Map<String,GorodGovRecord> gorodGov;
+    private Map<String,MongoRecord> rgisAddress;
 
     public Building() {
     }
@@ -42,12 +43,21 @@ public final class Building {
         this.gorodGov = gorodGov;
     }
 
+    public Map<String, MongoRecord> getRgisAddress() {
+        return rgisAddress;
+    }
+
+    public void setRgisAddress(Map<String, MongoRecord> rgisAddress) {
+        this.rgisAddress = rgisAddress;
+    }
+
     @Override
     public String toString() {
         return "Building{" +
                 "id=" + id +
                 ", address='" + address + '\'' +
                 ", gorodGov=" + gorodGov +
+                ", rgisAddress=" + rgisAddress +
                 '}';
     }
 
@@ -58,12 +68,13 @@ public final class Building {
         Building building = (Building) o;
         return Objects.equals(getId(), building.getId()) &&
                 Objects.equals(getAddress(), building.getAddress()) &&
-                Objects.equals(getGorodGov(), building.getGorodGov());
+                Objects.equals(getGorodGov(), building.getGorodGov()) &&
+                Objects.equals(getRgisAddress(), building.getRgisAddress());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(getId(), getAddress(), getGorodGov());
+        return Objects.hash(getId(), getAddress(), getGorodGov(), getRgisAddress());
     }
 }
