@@ -19,7 +19,14 @@ public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
 
     @Override
     public String getAddress(CSVRecord row) {
-        return row.get("Адрес").split(",", 3)[2];
+        String address = row.get("Адрес");
+
+        if (Character.isDigit(address.charAt(0))) {
+            // Удаляем индекс из начала
+            address = address.split(",", 2)[1].trim();
+        }
+        // Удаляем Санкт-Перербург/ г. Санкт-Петербург из начала
+        return address.split(",", 2)[1].trim();
     }
 
     @Override

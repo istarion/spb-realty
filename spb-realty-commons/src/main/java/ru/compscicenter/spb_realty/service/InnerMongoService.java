@@ -8,18 +8,30 @@ import com.mongodb.client.model.Filters;
 
 public class InnerMongoService {
     private MongoDatabase database;
+    private MongoCollection<Building> collection;
 
     public InnerMongoService(MongoDatabase database) {
         this.database = database;
+        this.collection = database.getCollection("buildings", Building.class);
     }
 
     public Building getBuildingOrCreate(String address) {
-        MongoCollection<Building> collection = database.getCollection("buildings", Building.class);
-        Building result = collection.find(Filters.eq("address", address)).first();
-        if (result == null) {
-            result = new Building();
-            result.setAddress(address);
+        Building result = null;
+        try {
+            result = this.collection.find(Filters.eq("address", address)).first();
+            if (result == null) {
+                result = new Building();
+                result.setAddress(address);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return result;
+    }
+
+    public boolean hasAddress(String address) {
+        Building record = this.collection.find(Filters.eq("address", address)).first();
+        return record != null;
     }
 }

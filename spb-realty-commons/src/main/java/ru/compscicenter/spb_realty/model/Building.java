@@ -9,14 +9,15 @@ public final class Building {
     private ObjectId id;
     private String address;
     private Map<String,GorodGovRecord> gorodGov;
-    private Map<String,MongoRecord> rgisAddress;
+    private Map<String,RgisAddressRecord> rgisAddress;
 
     public Building() {
     }
 
-    public Building(String address, Map<String, GorodGovRecord> gorodGov) {
+    public Building(String address, Map<String, GorodGovRecord> gorodGov, Map<String,RgisAddressRecord> rgisAddress) {
         this.address = address;
         this.gorodGov = gorodGov;
+        this.rgisAddress = rgisAddress;
     }
 
     public ObjectId getId() {
@@ -43,11 +44,11 @@ public final class Building {
         this.gorodGov = gorodGov;
     }
 
-    public Map<String, MongoRecord> getRgisAddress() {
+    public Map<String, RgisAddressRecord> getRgisAddress() {
         return rgisAddress;
     }
 
-    public void setRgisAddress(Map<String, MongoRecord> rgisAddress) {
+    public void setRgisAddress(Map<String, RgisAddressRecord> rgisAddress) {
         this.rgisAddress = rgisAddress;
     }
 

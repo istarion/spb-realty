@@ -28,7 +28,7 @@ public class RgisAddressRecord implements MongoRecord{
     private String FIAS_house_code;  // Код_ФИАС_дом
     private String yearOfConstruction;  // Год_постройки
 
-    private RgisAddressRecord() {
+    public RgisAddressRecord() {
     }
 
     public RgisAddressRecord(String number, String address, String houseNumber, String building, String litera,
