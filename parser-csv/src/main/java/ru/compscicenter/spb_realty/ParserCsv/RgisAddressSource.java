@@ -1,10 +1,29 @@
 package ru.compscicenter.spb_realty.ParserCsv;
 
 import org.apache.commons.csv.CSVRecord;
+import ru.compscicenter.spb_realty.model.Building;
 import ru.compscicenter.spb_realty.model.RgisAddressRecord;
 import ru.compscicenter.spb_realty.service.GorodGovService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
+
+    @Override
+    public Building setDataInBuilding(Building building, RgisAddressRecord rgisAddressRecord) {
+        Map<String, RgisAddressRecord> rgisAddressMap = building.getRgisAddress();
+        if (rgisAddressMap == null) {
+            rgisAddressMap = new HashMap<>();
+            building.setRgisAddress(rgisAddressMap);
+        }
+
+        if (!rgisAddressMap.containsKey(rgisAddressRecord.getNumber())) {
+            rgisAddressMap.put(rgisAddressRecord.getNumber(), rgisAddressRecord);
+        }
+
+        return building;
+    }
 
     @Override
     public RgisAddressRecord getData(CSVRecord row) {
@@ -29,7 +48,6 @@ public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
         return address.split(",", 2)[1].trim();
     }
 
-    @Override
     public String getId(CSVRecord row) {
         return row.get("Номер");
     }

@@ -12,6 +12,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.github.albfernandez:javadbf:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: args4j:args4j:2.33" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver:3.6.3" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:bson:3.6.3" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.6.3" level="project" />

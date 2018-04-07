@@ -73,27 +73,12 @@ public class Controller<T extends CsvSource> {
             System.out.println("Address found. Normalization skipped.");
         }
         Building building = mongoService.getBuildingOrCreate(address);
-        boolean updated = false;
 
-        if (building.getRgisAddress() == null) {
-            building.setRgisAddress(new HashMap<>());
-            updated = true;
-        }
+        source.setDataInBuilding(building, r);
 
-        if (!building.getRgisAddress().containsKey(source.getId(r))) {
-            building.getRgisAddress().put(source.getId(r), (RgisAddressRecord) customRecord);
-            updated = true;
-        }
+        logger.fine("Update: " + building.getAddress());
+        mongoService.getBuildingMongoCollection().replaceOne(Filters.eq("_id", building.getId()), building);
 
-        if (building.getId() == null) {
-            logger.fine("Insert: " + building);
-            mongoService.getBuildingMongoCollection().insertOne(building);
-        } else if (updated) {
-            logger.fine("Update: " + building);
-            mongoService.getBuildingMongoCollection().replaceOne(Filters.eq("_id", building.getId()), building);
-        } else {
-            logger.fine("Identical: " + building);
-        }
         long currentCnt = this.currentCount.incrementAndGet();
         System.out.println(String.format("Processed: %d/%d Progress: %.2f%%", currentCnt, this.allRecords,
                 (double) currentCnt * 100 / this.allRecords));
