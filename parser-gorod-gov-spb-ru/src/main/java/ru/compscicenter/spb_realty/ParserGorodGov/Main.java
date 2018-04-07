@@ -2,6 +2,7 @@ package ru.compscicenter.spb_realty.ParserGorodGov;
 
 
 import java.io.IOException;
+import ru.compscicenter.spb_realty.service.MongoService;
 
 
 public class Main {

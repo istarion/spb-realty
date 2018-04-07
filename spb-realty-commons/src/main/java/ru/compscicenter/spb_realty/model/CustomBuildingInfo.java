@@ -1,4 +1,4 @@
 package ru.compscicenter.spb_realty.model;
 
-public interface MongoRecord {
+public interface CustomBuildingInfo {
 }

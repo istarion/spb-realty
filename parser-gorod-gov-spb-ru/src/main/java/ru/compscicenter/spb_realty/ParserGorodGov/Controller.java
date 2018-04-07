@@ -1,10 +1,10 @@
 package ru.compscicenter.spb_realty.ParserGorodGov;
 
 import com.mongodb.client.model.Filters;
-import org.jsoup.HttpStatusException;
 import ru.compscicenter.spb_realty.model.Building;
 import ru.compscicenter.spb_realty.model.GorodGovRecord;
 import ru.compscicenter.spb_realty.service.GorodGovService;
+import ru.compscicenter.spb_realty.service.MongoService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class Controller {
             return null;
         }
 
-        Building record = mongoService.getInnerMongoService().getBuildingOrCreate(
+        Building record = mongoService.getBuildingOrCreate(
                 GorodGovService.normalizeAdress(gorodGovRecord.getAddress())
         );
         boolean updated = false;

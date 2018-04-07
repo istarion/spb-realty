@@ -1,6 +1,6 @@
 package ru.compscicenter.spb_realty.model;
 
-public class RgisAddressRecord implements MongoRecord{
+public class RgisAddressRecord implements CustomBuildingInfo {
     private String number;  // Номер
     private String address;  // Адрес
     private String houseNumber; // Номер дома

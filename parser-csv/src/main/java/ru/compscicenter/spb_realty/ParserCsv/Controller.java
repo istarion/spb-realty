@@ -3,14 +3,13 @@ package ru.compscicenter.spb_realty.ParserCsv;
 import com.mongodb.client.model.Filters;
 import org.apache.commons.csv.CSVRecord;
 import ru.compscicenter.spb_realty.model.Building;
-import ru.compscicenter.spb_realty.model.MongoRecord;
+import ru.compscicenter.spb_realty.model.CustomBuildingInfo;
 import ru.compscicenter.spb_realty.model.RgisAddressRecord;
 import ru.compscicenter.spb_realty.service.GorodGovService;
 import ru.compscicenter.spb_realty.service.MongoService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -18,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.*;
-import java.util.stream.Stream;
 
 public class Controller<T extends CsvSource> {
     private MongoService mongoService;
@@ -67,14 +65,14 @@ public class Controller<T extends CsvSource> {
     }
 
     private Void processRecord(CSVRecord r) {
-        MongoRecord customRecord = source.getData(r);
+        CustomBuildingInfo customRecord = source.getData(r);
         String address = source.getAddress(r);
-        if (!mongoService.getInnerMongoService().hasAddress(address)) {
+        if (!mongoService.hasAddress(address)) {
             address = GorodGovService.normalizeAdress(source.getAddress(r));
         } else {
             System.out.println("Address found. Normalization skipped.");
         }
-        Building building = mongoService.getInnerMongoService().getBuildingOrCreate(address);
+        Building building = mongoService.getBuildingOrCreate(address);
         boolean updated = false;
 
         if (building.getRgisAddress() == null) {

@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import ru.compscicenter.spb_realty.model.Building;
@@ -16,7 +17,9 @@ public class MongoService {
     private MongoClient mongoClient;
     private MongoDatabase database;
     private MongoCollection<Building> buildingMongoCollection;
-    private InnerMongoService innerMongoService;
+    private String DATABASE_NAME = "test";
+    private String BUILDINGS_COLLECTION_NAME = "buildings";
+
 
     public MongoService() {
         this.pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
@@ -27,9 +30,8 @@ public class MongoService {
                 MongoClientOptions.builder().codecRegistry(this.pojoCodecRegistry).build()
         );
 
-        this.database = mongoClient.getDatabase("test");
-        this.buildingMongoCollection = this.database.getCollection("buildings", Building.class);
-        this.innerMongoService = new InnerMongoService(database);
+        this.database = mongoClient.getDatabase(DATABASE_NAME);
+        this.buildingMongoCollection = this.database.getCollection(BUILDINGS_COLLECTION_NAME, Building.class);
     }
 
     public CodecRegistry getPojoCodecRegistry() {
@@ -48,7 +50,23 @@ public class MongoService {
         return buildingMongoCollection;
     }
 
-    public InnerMongoService getInnerMongoService() {
-        return innerMongoService;
+    public Building getBuildingOrCreate(String address) {
+        Building result = null;
+        try {
+            result = this.buildingMongoCollection.find(Filters.eq("address", address)).first();
+            if (result == null) {
+                result = new Building();
+                result.setAddress(address);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean hasAddress(String address) {
+        Building record = this.buildingMongoCollection.find(Filters.eq("address", address)).first();
+        return record != null;
     }
 }
