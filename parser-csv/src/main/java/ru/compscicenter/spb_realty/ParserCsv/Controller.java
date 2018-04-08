@@ -65,14 +65,8 @@ public class Controller<T extends CsvSource> {
     }
 
     private Void processRecord(CSVRecord r) {
-        CustomBuildingInfo customRecord = source.getData(r);
         String address = source.getAddress(r);
-        if (!mongoService.hasAddress(address)) {
-            address = GorodGovService.normalizeAdress(source.getAddress(r));
-        } else {
-            System.out.println("Address found. Normalization skipped.");
-        }
-        Building building = mongoService.getBuildingOrCreate(address);
+        Building building = mongoService.getBuildingByRawAddress(address);
 
         source.setDataInBuilding(building, r);
 

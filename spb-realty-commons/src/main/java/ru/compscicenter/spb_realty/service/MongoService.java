@@ -17,8 +17,8 @@ public class MongoService {
     private MongoClient mongoClient;
     private MongoDatabase database;
     private MongoCollection<Building> buildingMongoCollection;
-    private String DATABASE_NAME = "test";
-    private String BUILDINGS_COLLECTION_NAME = "buildings";
+    private final String DATABASE_NAME = "test";
+    private final String BUILDINGS_COLLECTION_NAME = "buildings5";
 
 
     public MongoService() {
@@ -65,8 +65,24 @@ public class MongoService {
         return result;
     }
 
+    public Building getBuildingByRawAddress(String address) {
+        Building building = this.getBuildingByAlias(address);
+        if (building == null) {
+            String normalizedAddress = GorodGovService.normalizeAdress(address);
+            building = this.getBuildingOrCreate(normalizedAddress);
+            building.addToAddressAliases(address);
+            this.buildingMongoCollection.insertOne(building);
+            System.out.println("Normalizing via http");
+        }
+        return building;
+    }
+
     public boolean hasAddress(String address) {
         Building record = this.buildingMongoCollection.find(Filters.eq("address", address)).first();
         return record != null;
+    }
+
+    private Building getBuildingByAlias(String alias) {
+        return this.buildingMongoCollection.find(Filters.eq("addressAliases", alias)).first();
     }
 }

@@ -2,12 +2,16 @@ package ru.compscicenter.spb_realty.model;
 
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public final class Building {
     private ObjectId id;
     private String address;
+    private List<String> addressAliases = new ArrayList<>();
+
     private Map<String,GorodGovRecord> gorodGov;
     private Map<String,RgisAddressRecord> rgisAddress;
 
@@ -18,6 +22,7 @@ public final class Building {
         this.address = address;
         this.gorodGov = gorodGov;
         this.rgisAddress = rgisAddress;
+        this.addressAliases.add(address);
     }
 
     public ObjectId getId() {
@@ -34,6 +39,24 @@ public final class Building {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<String> getAddressAliases() {
+        return addressAliases;
+    }
+
+    public void setAddressAliases(List<String> addressAliases) {
+        this.addressAliases = addressAliases;
+    }
+
+    public void addToAddressAliases(String address) {
+        if (this.addressAliases == null) {
+            this.addressAliases = new ArrayList<>();
+        }
+
+        if (!this.addressAliases.contains(address)) {
+            this.addressAliases.add(address);
+        }
     }
 
     public Map<String, GorodGovRecord> getGorodGov() {
@@ -57,6 +80,7 @@ public final class Building {
         return "Building{" +
                 "id=" + id +
                 ", address='" + address + '\'' +
+                ", addressAliases=" + addressAliases +
                 ", gorodGov=" + gorodGov +
                 ", rgisAddress=" + rgisAddress +
                 '}';
@@ -69,6 +93,7 @@ public final class Building {
         Building building = (Building) o;
         return Objects.equals(getId(), building.getId()) &&
                 Objects.equals(getAddress(), building.getAddress()) &&
+                Objects.equals(getAddressAliases(), building.getAddressAliases()) &&
                 Objects.equals(getGorodGov(), building.getGorodGov()) &&
                 Objects.equals(getRgisAddress(), building.getRgisAddress());
     }
@@ -76,6 +101,6 @@ public final class Building {
     @Override
     public int hashCode() {
 
-        return Objects.hash(getId(), getAddress(), getGorodGov(), getRgisAddress());
+        return Objects.hash(getId(), getAddress(), getAddressAliases(), getGorodGov(), getRgisAddress());
     }
 }
