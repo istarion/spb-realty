@@ -71,15 +71,11 @@ public class MongoService {
             String normalizedAddress = GorodGovService.normalizeAdress(address);
             building = this.getBuildingOrCreate(normalizedAddress);
             building.addToAddressAliases(address);
-            this.buildingMongoCollection.insertOne(building);
+            building.addToAddressAliases(normalizedAddress);
+            this.buildingMongoCollection.replaceOne(Filters.eq("_id", building.getId()), building);
             System.out.println("Normalizing via http");
         }
         return building;
-    }
-
-    public boolean hasAddress(String address) {
-        Building record = this.buildingMongoCollection.find(Filters.eq("address", address)).first();
-        return record != null;
     }
 
     private Building getBuildingByAlias(String alias) {

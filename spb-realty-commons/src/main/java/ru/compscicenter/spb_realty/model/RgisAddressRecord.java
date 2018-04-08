@@ -1,5 +1,6 @@
 package ru.compscicenter.spb_realty.model;
 
+
 public class RgisAddressRecord implements CustomBuildingInfo {
     private String number;  // Номер
     private String address;  // Адрес

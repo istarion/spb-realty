@@ -2,27 +2,17 @@ package ru.compscicenter.spb_realty.model;
 
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public final class Building {
     private ObjectId id;
     private String address;
-    private List<String> addressAliases = new ArrayList<>();
+    private List<String> addressAliases;
 
     private Map<String,GorodGovRecord> gorodGov;
     private Map<String,RgisAddressRecord> rgisAddress;
 
     public Building() {
-    }
-
-    public Building(String address, Map<String, GorodGovRecord> gorodGov, Map<String,RgisAddressRecord> rgisAddress) {
-        this.address = address;
-        this.gorodGov = gorodGov;
-        this.rgisAddress = rgisAddress;
-        this.addressAliases.add(address);
     }
 
     public ObjectId getId() {

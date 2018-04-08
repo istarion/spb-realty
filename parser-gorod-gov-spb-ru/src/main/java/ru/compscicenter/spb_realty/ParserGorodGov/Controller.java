@@ -66,9 +66,7 @@ public class Controller {
             return null;
         }
 
-        Building record = mongoService.getBuildingOrCreate(
-                GorodGovService.normalizeAdress(gorodGovRecord.getAddress())
-        );
+        Building record = mongoService.getBuildingByRawAddress(gorodGovRecord.getAddress());
         boolean updated = false;
 
         if (record.getGorodGov() == null) {

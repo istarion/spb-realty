@@ -1,6 +1,7 @@
 package ru.compscicenter.spb_realty.ParserCsv;
 
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.UpdateResult;
 import org.apache.commons.csv.CSVRecord;
 import ru.compscicenter.spb_realty.model.Building;
 import ru.compscicenter.spb_realty.model.CustomBuildingInfo;
@@ -43,7 +44,7 @@ public class Controller<T extends CsvSource> {
         this.source = source;
     }
 
-    public synchronized void run(int threads, Iterable<CSVRecord> records) throws IOException {
+    public synchronized void run(int threads, Iterable<CSVRecord> records){
         this.threadPool = Executors.newFixedThreadPool(threads);
 
         List<Callable<Void>> tasks = new ArrayList<>();
@@ -71,7 +72,12 @@ public class Controller<T extends CsvSource> {
         source.setDataInBuilding(building, r);
 
         logger.fine("Update: " + building.getAddress());
-        mongoService.getBuildingMongoCollection().replaceOne(Filters.eq("_id", building.getId()), building);
+        try {
+            mongoService.getBuildingMongoCollection().replaceOne(Filters.eq("_id", building.getId()), building);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         long currentCnt = this.currentCount.incrementAndGet();
         System.out.println(String.format("Processed: %d/%d Progress: %.2f%%", currentCnt, this.allRecords,
