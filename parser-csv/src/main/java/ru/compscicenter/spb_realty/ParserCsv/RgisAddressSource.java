@@ -18,9 +18,7 @@ public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
             building.setRgisAddress(rgisAddressMap);
         }
 
-        if (!rgisAddressMap.containsKey(rgisAddressRecord.getNumber())) {
-            rgisAddressMap.put(rgisAddressRecord.getNumber(), rgisAddressRecord);
-        }
+        rgisAddressMap.put(rgisAddressRecord.getNumber(), rgisAddressRecord);
 
         return building;
     }

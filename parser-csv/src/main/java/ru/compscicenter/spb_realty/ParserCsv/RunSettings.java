@@ -6,7 +6,8 @@ import java.util.Map;
 
 public class RunSettings {
     private Map<String, Class<? extends CsvSource>> sourcesMap = Map.ofEntries(
-            Map.entry("RGISADDRESS", RgisAddressSource.class)
+            Map.entry("RGISADDRESS", RgisAddressSource.class),
+            Map.entry("ZUPALATA", ZuPalataSource.class)
     );
 
     @Option(name = "-f", aliases = "--filename", usage = "CSV file", required = true)
@@ -15,7 +16,7 @@ public class RunSettings {
     @Option(name = "--charset", usage = "CSV file charset (like utf-8 or windows-1251)")
     private String charsetName = "utf-8";
 
-    @Option(name = "--source", usage = "Source type, can be rgisAddress now", required = true)
+    @Option(name = "--source", usage = "Source type, can be rgisAddress or zuPalata now", required = true)
     private String source;
 
     public String getFilename() {
