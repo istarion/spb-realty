@@ -27,7 +27,7 @@ public class ZUPalataRecord implements CustomBuildingInfo {
     private String kadNumberSoleLanduse;  // Кад_N_единого_землепольз
     private String kadNumberPartE3;  // Кад_N_частей_Е_З
     private String graphicsOwner;  // Чья_графика
-    private Long uuid_kzr;
+    private Double uuid_kzr;
     private String orientingPoint;  // Ориентир
     private String orientingDirection;  // Направл_ориентира
     private String orientingDistance;  // Расстояние_ориент
@@ -40,7 +40,7 @@ public class ZUPalataRecord implements CustomBuildingInfo {
                           Double squareRequested, Double squareFact, Double squareRefined, String category,
                           String permission, String oldKadNumber, Double kadValue, Double unitValue, String address,
                           String prevKadN, String dateOfTGR, String kadEngineer, String kadNumberSoleLanduse,
-                          String kadNumberPartE3, String graphicsOwner, Long uuid_kzr, String orientingPoint,
+                          String kadNumberPartE3, String graphicsOwner, Double uuid_kzr, String orientingPoint,
                           String orientingDirection, String orientingDistance) {
         this.uniqueNumber = uniqueNumber;
         this.kadNumber = kadNumber;
@@ -264,11 +264,11 @@ public class ZUPalataRecord implements CustomBuildingInfo {
         this.graphicsOwner = graphicsOwner;
     }
 
-    public Long getUuid_kzr() {
+    public Double getUuid_kzr() {
         return uuid_kzr;
     }
 
-    public void setUuid_kzr(Long uuid_kzr) {
+    public void setUuid_kzr(Double uuid_kzr) {
         this.uuid_kzr = uuid_kzr;
     }
 

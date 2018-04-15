@@ -1,6 +1,8 @@
 package ru.compscicenter.spb_realty.ParserCsv;
 
+import com.mongodb.client.model.Updates;
 import org.apache.commons.csv.CSVRecord;
+import org.bson.conversions.Bson;
 import ru.compscicenter.spb_realty.model.Building;
 import ru.compscicenter.spb_realty.model.RgisAddressRecord;
 import ru.compscicenter.spb_realty.service.GorodGovService;
@@ -10,7 +12,6 @@ import java.util.Map;
 
 public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
 
-    @Override
     public Building setDataInBuilding(Building building, RgisAddressRecord rgisAddressRecord) {
         Map<String, RgisAddressRecord> rgisAddressMap = building.getRgisAddress();
         if (rgisAddressMap == null) {
@@ -44,6 +45,13 @@ public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
         }
         // Удаляем Санкт-Перербург/ г. Санкт-Петербург из начала
         return address.split(",", 2)[1].trim();
+    }
+
+    @Override
+    public Bson getUpdates(CSVRecord row) {
+        RgisAddressRecord rgisAddressRecord = this.getData(row);
+        String key = "rgisAddress." + rgisAddressRecord.getNumber();
+        return Updates.combine(Updates.set(key, rgisAddressRecord), Updates.currentTimestamp("lastModified"));
     }
 
     public String getId(CSVRecord row) {

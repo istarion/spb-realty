@@ -5,9 +5,12 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import ru.compscicenter.spb_realty.model.Building;
+
+import java.util.List;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -71,8 +74,22 @@ public class MongoService {
             String normalizedAddress = GorodGovService.normalizeAdress(address);
             building = this.getBuildingOrCreate(normalizedAddress);
             building.addToAddressAliases(address);
-            building.addToAddressAliases(normalizedAddress);
-            this.buildingMongoCollection.replaceOne(Filters.eq("_id", building.getId()), building);
+
+            if (building.getAddressAliases().contains(normalizedAddress)) {
+                List<String> newAliases = List.of(address);
+            } else {
+                List<String> newAliases = List.of(address, normalizedAddress);
+            }
+
+            if (building.getId() == null) {
+                this.buildingMongoCollection.insertOne(building);
+                building = this.getBuildingByAlias(address);
+            } else {
+                this.buildingMongoCollection.updateOne(
+                        Filters.eq("_id", building.getId()),
+                        Updates.addEachToSet("addressAliases", building.getAddressAliases())
+                );
+            }
             System.out.println("Normalizing via http");
         }
         return building;

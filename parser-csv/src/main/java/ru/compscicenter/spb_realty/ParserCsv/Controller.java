@@ -3,6 +3,7 @@ package ru.compscicenter.spb_realty.ParserCsv;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
 import org.apache.commons.csv.CSVRecord;
+import org.bson.conversions.Bson;
 import ru.compscicenter.spb_realty.model.Building;
 import ru.compscicenter.spb_realty.model.CustomBuildingInfo;
 import ru.compscicenter.spb_realty.model.RgisAddressRecord;
@@ -67,17 +68,25 @@ public class Controller<T extends CsvSource> {
 
     private Void processRecord(CSVRecord r) {
         String address = source.getAddress(r);
-        Building building = mongoService.getBuildingByRawAddress(address);
+        if (!address.equals("NOT_FOUND")) {
+            Building building = mongoService.getBuildingByRawAddress(address);
 
-        source.setDataInBuilding(building, r);
+            Bson updates = source.getUpdates(r);
 
-        logger.fine("Update: " + building.getAddress());
-        try {
-            mongoService.getBuildingMongoCollection().replaceOne(Filters.eq("_id", building.getId()), building);
-        } catch (Exception e) {
-            e.printStackTrace();
+            logger.fine("Update: " + building.getAddress());
+            try {
+                if (building.getId() != null) {
+                    mongoService.getBuildingMongoCollection().updateOne(Filters.eq("_id", building.getId()), updates);
+                } else {
+                    mongoService.getBuildingMongoCollection().insertOne(building);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            logger.fine("NOT_FOUND: " + address);
         }
-
 
         long currentCnt = this.currentCount.incrementAndGet();
         System.out.println(String.format("Processed: %d/%d Progress: %.2f%%", currentCnt, this.allRecords,

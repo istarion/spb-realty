@@ -11,7 +11,7 @@ public final class Building {
 
     private Map<String,GorodGovRecord> gorodGov;
     private Map<String,RgisAddressRecord> rgisAddress;
-    private Map<String,ZUPalataRecord> zuPalataRecordMap;
+    private Map<String,ZUPalataRecord> zuPalataRecord;
 
     public Building() {
     }
@@ -67,11 +67,11 @@ public final class Building {
     }
 
     public Map<String, ZUPalataRecord> getZuPalataRecordMap() {
-        return zuPalataRecordMap;
+        return zuPalataRecord;
     }
 
     public void setZuPalataRecordMap(Map<String, ZUPalataRecord> zuPalataRecordMap) {
-        this.zuPalataRecordMap = zuPalataRecordMap;
+        this.zuPalataRecord = zuPalataRecordMap;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package ru.compscicenter.spb_realty.ParserCsv;
 
+import com.mongodb.client.model.Updates;
 import org.apache.commons.csv.CSVRecord;
+import org.bson.conversions.Bson;
 import ru.compscicenter.spb_realty.model.Building;
+import ru.compscicenter.spb_realty.model.RgisAddressRecord;
 import ru.compscicenter.spb_realty.model.ZUPalataRecord;
 
 import java.util.HashMap;
@@ -12,7 +15,6 @@ import static ru.compscicenter.spb_realty.ParserCsv.util.Parsers.parseLong;
 
 public class ZuPalataSource implements CsvSource<ZUPalataRecord> {
 
-    @Override
     public Building setDataInBuilding(Building building, ZUPalataRecord data) {
         Map<String, ZUPalataRecord> zuPalataRecordMap = building.getZuPalataRecordMap();
         if (zuPalataRecordMap == null) {
@@ -34,7 +36,7 @@ public class ZuPalataSource implements CsvSource<ZUPalataRecord> {
         Double squareRefined = parseDouble(row.get("Площадь_уточнённая"));
         Double kadValue = parseDouble(row.get("Кадастр_Стоимость"));
         Double unitValue = parseDouble(row.get("Удельн_стоимость"));
-        Long uuid_kzr = parseLong(row.get("Площадь_фактическая"));
+        Double uuid_kzr = parseDouble(row.get("Площадь_фактическая"));
 
         return new ZUPalataRecord(
                 uniqueNumber, row.get("Кад_Номер"), row.get("Наименование"), row.get("Статус"), row.get("Вид_Права"),
@@ -57,5 +59,12 @@ public class ZuPalataSource implements CsvSource<ZUPalataRecord> {
         }
         // Удаляем Санкт-Перербург/ г. Санкт-Петербург из начала
         return address.split(",", 2)[1].trim();
+    }
+
+    @Override
+    public Bson getUpdates(CSVRecord row) {
+        ZUPalataRecord zuPalataRecord = this.getData(row);
+        String key = "zuPalataRecord." + zuPalataRecord.getUniqueNumber();
+        return Updates.combine(Updates.set(key, zuPalataRecord), Updates.currentTimestamp("lastModified"));
     }
 }
