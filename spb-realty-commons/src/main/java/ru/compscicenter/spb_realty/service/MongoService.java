@@ -21,7 +21,7 @@ public class MongoService {
     private MongoDatabase database;
     private MongoCollection<Building> buildingMongoCollection;
     private final String DATABASE_NAME = "test";
-    private final String BUILDINGS_COLLECTION_NAME = "buildings5";
+    private final String BUILDINGS_COLLECTION_NAME = "spbRealty";
 
 
     public MongoService() {
@@ -75,11 +75,10 @@ public class MongoService {
             building = this.getBuildingOrCreate(normalizedAddress);
             building.addToAddressAliases(address);
 
-            if (building.getAddressAliases().contains(normalizedAddress)) {
-                List<String> newAliases = List.of(address);
-            } else {
-                List<String> newAliases = List.of(address, normalizedAddress);
+            if (!building.getAddressAliases().contains(address)) {
+                building.setEasCode(GorodGovService.getEas(address));
             }
+
 
             if (building.getId() == null) {
                 this.buildingMongoCollection.insertOne(building);
@@ -87,7 +86,10 @@ public class MongoService {
             } else {
                 this.buildingMongoCollection.updateOne(
                         Filters.eq("_id", building.getId()),
-                        Updates.addEachToSet("addressAliases", building.getAddressAliases())
+                        Updates.combine(
+                                Updates.addEachToSet("addressAliases", building.getAddressAliases()),
+                                Updates.set("easCode", building.getEasCode())
+                        )
                 );
             }
             System.out.println("Normalizing via http");

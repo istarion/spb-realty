@@ -8,6 +8,8 @@ public final class Building {
     private ObjectId id;
     private String address;
     private List<String> addressAliases;
+    private String fiasCode;
+    private String easCode;
 
     private Map<String,GorodGovRecord> gorodGov;
     private Map<String,RgisAddressRecord> rgisAddress;
@@ -74,15 +76,20 @@ public final class Building {
         this.zuPalataRecord = zuPalataRecordMap;
     }
 
-    @Override
-    public String toString() {
-        return "Building{" +
-                "id=" + id +
-                ", address='" + address + '\'' +
-                ", addressAliases=" + addressAliases +
-                ", gorodGov=" + gorodGov +
-                ", rgisAddress=" + rgisAddress +
-                '}';
+    public String getFiasCode() {
+        return fiasCode;
+    }
+
+    public void setFiasCode(String fiasCode) {
+        this.fiasCode = fiasCode;
+    }
+
+    public String getEasCode() {
+        return easCode;
+    }
+
+    public void setEasCode(String easCode) {
+        this.easCode = easCode;
     }
 
     @Override
@@ -93,13 +100,25 @@ public final class Building {
         return Objects.equals(getId(), building.getId()) &&
                 Objects.equals(getAddress(), building.getAddress()) &&
                 Objects.equals(getAddressAliases(), building.getAddressAliases()) &&
+                Objects.equals(fiasCode, building.fiasCode) &&
                 Objects.equals(getGorodGov(), building.getGorodGov()) &&
-                Objects.equals(getRgisAddress(), building.getRgisAddress());
+                Objects.equals(getRgisAddress(), building.getRgisAddress()) &&
+                Objects.equals(zuPalataRecord, building.zuPalataRecord);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(getId(), getAddress(), getAddressAliases(), getGorodGov(), getRgisAddress());
+        return Objects.hash(getId(), getAddress(), getAddressAliases(), fiasCode, getGorodGov(), getRgisAddress(), zuPalataRecord);
+    }
+
+    @Override
+    public String toString() {
+        return "Building{" +
+                "id=" + id +
+                ", address='" + address + '\'' +
+                ", addressAliases=" + addressAliases +
+                ", fiasCode='" + fiasCode + '\'' +
+                '}';
     }
 }

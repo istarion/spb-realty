@@ -34,7 +34,7 @@ public class Main {
                     settings.getCsvSource().getDeclaredConstructor().newInstance()
             );
 
-            c.run(32, records);
+            c.run(4, records);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

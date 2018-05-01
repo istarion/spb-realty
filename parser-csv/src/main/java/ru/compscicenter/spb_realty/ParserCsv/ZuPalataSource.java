@@ -4,14 +4,12 @@ import com.mongodb.client.model.Updates;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.conversions.Bson;
 import ru.compscicenter.spb_realty.model.Building;
-import ru.compscicenter.spb_realty.model.RgisAddressRecord;
 import ru.compscicenter.spb_realty.model.ZUPalataRecord;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static ru.compscicenter.spb_realty.ParserCsv.util.Parsers.parseDouble;
-import static ru.compscicenter.spb_realty.ParserCsv.util.Parsers.parseLong;
 
 public class ZuPalataSource implements CsvSource<ZUPalataRecord> {
 
@@ -62,7 +60,7 @@ public class ZuPalataSource implements CsvSource<ZUPalataRecord> {
     }
 
     @Override
-    public Bson getUpdates(CSVRecord row) {
+    public Bson getUpdates(CSVRecord row, Building building) {
         ZUPalataRecord zuPalataRecord = this.getData(row);
         String key = "zuPalataRecord." + zuPalataRecord.getUniqueNumber();
         return Updates.combine(Updates.set(key, zuPalataRecord), Updates.currentTimestamp("lastModified"));

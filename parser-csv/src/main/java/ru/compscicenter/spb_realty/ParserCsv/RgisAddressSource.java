@@ -5,12 +5,12 @@ import org.apache.commons.csv.CSVRecord;
 import org.bson.conversions.Bson;
 import ru.compscicenter.spb_realty.model.Building;
 import ru.compscicenter.spb_realty.model.RgisAddressRecord;
-import ru.compscicenter.spb_realty.service.GorodGovService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
+public class RgisAddressSource implements CsvSource<RgisAddressRecord> {
 
     public Building setDataInBuilding(Building building, RgisAddressRecord rgisAddressRecord) {
         Map<String, RgisAddressRecord> rgisAddressMap = building.getRgisAddress();
@@ -48,10 +48,20 @@ public class RgisAddressSource implements CsvSource<RgisAddressRecord>{
     }
 
     @Override
-    public Bson getUpdates(CSVRecord row) {
+    public Bson getUpdates(CSVRecord row, Building building) {
         RgisAddressRecord rgisAddressRecord = this.getData(row);
         String key = "rgisAddress." + rgisAddressRecord.getNumber();
-        return Updates.combine(Updates.set(key, rgisAddressRecord), Updates.currentTimestamp("lastModified"));
+
+        String fiasCode = rgisAddressRecord.getFIAS_house_code();
+        if (fiasCode == null) {
+            fiasCode = building.getFiasCode();
+        }
+
+        return Updates.combine(
+                Updates.set(key, rgisAddressRecord),
+                Updates.currentTimestamp("lastModified"),
+                Updates.set("fiasCode", fiasCode)
+        );
     }
 
     public String getId(CSVRecord row) {

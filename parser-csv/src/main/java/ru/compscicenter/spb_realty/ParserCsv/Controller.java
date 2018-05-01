@@ -1,18 +1,13 @@
 package ru.compscicenter.spb_realty.ParserCsv;
 
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.UpdateResult;
 import org.apache.commons.csv.CSVRecord;
 import org.bson.conversions.Bson;
 import ru.compscicenter.spb_realty.model.Building;
-import ru.compscicenter.spb_realty.model.CustomBuildingInfo;
-import ru.compscicenter.spb_realty.model.RgisAddressRecord;
-import ru.compscicenter.spb_realty.service.GorodGovService;
 import ru.compscicenter.spb_realty.service.MongoService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -71,7 +66,13 @@ public class Controller<T extends CsvSource> {
         if (!address.equals("NOT_FOUND")) {
             Building building = mongoService.getBuildingByRawAddress(address);
 
-            Bson updates = source.getUpdates(r);
+            if (building.getAddress().equals("NOT_FOUND")) {
+                logger.fine("NOT_FOUND: " + address);
+                System.out.println(this.getCurrentProcess());
+                return null;
+            }
+
+            Bson updates = source.getUpdates(r, building);
 
             logger.fine("Update: " + building.getAddress());
             try {
@@ -88,10 +89,12 @@ public class Controller<T extends CsvSource> {
             logger.fine("NOT_FOUND: " + address);
         }
 
-        long currentCnt = this.currentCount.incrementAndGet();
-        System.out.println(String.format("Processed: %d/%d Progress: %.2f%%", currentCnt, this.allRecords,
-                (double) currentCnt * 100 / this.allRecords));
-
+        System.out.println(this.getCurrentProcess());
         return null;
+    }
+
+    private String getCurrentProcess() {
+        long currentCnt = this.currentCount.incrementAndGet();
+        return String.format("Processed: %d/%d Progress: %.2f%%", currentCnt, this.allRecords, (double) currentCnt * 100 / this.allRecords);
     }
 }
