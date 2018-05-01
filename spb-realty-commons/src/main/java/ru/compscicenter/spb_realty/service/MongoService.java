@@ -84,13 +84,18 @@ public class MongoService {
                 this.buildingMongoCollection.insertOne(building);
                 building = this.getBuildingByAlias(address);
             } else {
-                this.buildingMongoCollection.updateOne(
-                        Filters.eq("_id", building.getId()),
-                        Updates.combine(
-                                Updates.addEachToSet("addressAliases", building.getAddressAliases()),
-                                Updates.set("easCode", building.getEasCode())
-                        )
-                );
+                try{
+                    this.buildingMongoCollection.updateOne(
+                            Filters.eq("_id", building.getId()),
+                            Updates.combine(
+                                    Updates.addToSet("addressAliases", address),
+                                    Updates.set("easCode", building.getEasCode())
+                            )
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
             System.out.println("Normalizing via http");
         }

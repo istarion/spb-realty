@@ -47,7 +47,7 @@ public class GorodGovService {
                 doc = null;
                 for (Element a : severalHousesList.first().getElementsByTag("a")) {
                     String elemText = a.getElementsByClass("address").first().ownText();
-                    if (elemText.endsWith(address.substring(address.lastIndexOf(' ' + 1)))) {
+                    if (elemText.endsWith(address.substring(address.lastIndexOf(' ') + 1))) {
                         doc = Jsoup.connect("https://gorod.gov.spb.ru" + a.attr("href") + "info")
                                 .data("query", address)
                                 .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
