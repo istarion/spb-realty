@@ -75,8 +75,9 @@ public class MongoService {
             building = this.getBuildingOrCreate(normalizedAddress);
             building.addToAddressAliases(address);
 
-            if (!building.getAddressAliases().contains(address)) {
-                building.setEasCode(GorodGovService.getEas(address));
+            if (!building.getAddressAliases().contains(normalizedAddress)) {
+                building.setEasCode(GorodGovService.getEas(normalizedAddress));
+                building.addToAddressAliases(normalizedAddress);
             }
 
 

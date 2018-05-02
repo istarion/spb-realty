@@ -10,6 +10,7 @@ public final class Building {
     private List<String> addressAliases;
     private String fiasCode;
     private String easCode;
+    private String kadastrCode;
 
     private Map<String,GorodGovRecord> gorodGov;
     private Map<String,RgisAddressRecord> rgisAddress;
@@ -92,6 +93,14 @@ public final class Building {
         this.easCode = easCode;
     }
 
+    public String getKadastrCode() {
+        return kadastrCode;
+    }
+
+    public void setKadastrCode(String kadastrCode) {
+        this.kadastrCode = kadastrCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,7 +109,9 @@ public final class Building {
         return Objects.equals(getId(), building.getId()) &&
                 Objects.equals(getAddress(), building.getAddress()) &&
                 Objects.equals(getAddressAliases(), building.getAddressAliases()) &&
-                Objects.equals(fiasCode, building.fiasCode) &&
+                Objects.equals(getFiasCode(), building.getFiasCode()) &&
+                Objects.equals(getEasCode(), building.getEasCode()) &&
+                Objects.equals(getKadastrCode(), building.getKadastrCode()) &&
                 Objects.equals(getGorodGov(), building.getGorodGov()) &&
                 Objects.equals(getRgisAddress(), building.getRgisAddress()) &&
                 Objects.equals(zuPalataRecord, building.zuPalataRecord);
@@ -108,8 +119,7 @@ public final class Building {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getId(), getAddress(), getAddressAliases(), fiasCode, getGorodGov(), getRgisAddress(), zuPalataRecord);
+        return Objects.hash(getId(), getAddress(), getAddressAliases(), getFiasCode(), getEasCode(), getKadastrCode(), getGorodGov(), getRgisAddress(), zuPalataRecord);
     }
 
     @Override
@@ -119,6 +129,11 @@ public final class Building {
                 ", address='" + address + '\'' +
                 ", addressAliases=" + addressAliases +
                 ", fiasCode='" + fiasCode + '\'' +
+                ", easCode='" + easCode + '\'' +
+                ", kadastrCode='" + kadastrCode + '\'' +
+                ", gorodGov=" + gorodGov +
+                ", rgisAddress=" + rgisAddress +
+                ", zuPalataRecord=" + zuPalataRecord +
                 '}';
     }
 }

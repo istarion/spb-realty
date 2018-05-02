@@ -63,6 +63,16 @@ public class ZuPalataSource implements CsvSource<ZUPalataRecord> {
     public Bson getUpdates(CSVRecord row, Building building) {
         ZUPalataRecord zuPalataRecord = this.getData(row);
         String key = "zuPalataRecord." + zuPalataRecord.getUniqueNumber();
-        return Updates.combine(Updates.set(key, zuPalataRecord), Updates.currentTimestamp("lastModified"));
+
+        String kadNumber = zuPalataRecord.getKadNumber();
+        if (kadNumber == null) {
+            kadNumber = building.getKadastrCode();
+        }
+
+        return Updates.combine(
+                Updates.set(key, zuPalataRecord),
+                Updates.currentTimestamp("lastModified"),
+                Updates.set("kadastrCode", kadNumber)
+        );
     }
 }

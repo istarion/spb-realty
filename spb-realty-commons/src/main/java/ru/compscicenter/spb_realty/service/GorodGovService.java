@@ -9,6 +9,9 @@ import org.jsoup.select.Elements;
 import javax.print.Doc;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class GorodGovService {
@@ -27,12 +30,19 @@ public class GorodGovService {
 
     public static String getEas(String address) {
         Document doc = getBuildingDocument(address);
+        if (doc == null) {
+            return null;
+        }
         String uri = doc.baseUri();
         String eas = uri.substring(uri.indexOf("/facilities/") + 12, uri.indexOf("/problems"));
         return eas;
     }
 
     private static Document getBuildingDocument(String address) {
+        if (address.equals("NOT_FOUND")) {
+            return null;
+        }
+
         Document doc = null;
         try {
             doc = Jsoup.connect("https://gorod.gov.spb.ru/facilities/search/")
@@ -45,16 +55,25 @@ public class GorodGovService {
 
             if (!severalHousesList.isEmpty()) {
                 doc = null;
-                for (Element a : severalHousesList.first().getElementsByTag("a")) {
-                    String elemText = a.getElementsByClass("address").first().ownText();
-                    if (elemText.endsWith(address.substring(address.lastIndexOf(' ') + 1))) {
-                        doc = Jsoup.connect("https://gorod.gov.spb.ru" + a.attr("href") + "info")
-                                .data("query", address)
-                                .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-                                .timeout(30 * 1000)
-                                .get();
-                    }
+                Set<String> addressSet = severalHousesList.first().getElementsByTag("a").stream()
+                        .map((Element a) -> a.getElementsByClass("address").first().ownText())
+                        .collect(Collectors.toSet());
+
+                Optional<String> resolvedAddress = AddressResolverService.resolveFromSet(address, addressSet);
+
+                if (resolvedAddress.isPresent()) {
+                    String href = severalHousesList.first().getElementsByTag("a").stream()
+                            .filter((Element a) -> getTextFromAnchor(a).equals(resolvedAddress.get()))
+                            .map((Element a) -> "https://gorod.gov.spb.ru" + a.attr("href") + "info")
+                            .findFirst().get();
+
+                    doc = Jsoup.connect(href)
+                            .data("query", address)
+                            .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                            .timeout(30 * 1000)
+                            .get();
                 }
+
             }
         } catch (SocketTimeoutException e) {
             return getBuildingDocument(address);
@@ -74,5 +93,9 @@ public class GorodGovService {
             e.printStackTrace();
         }
         return doc;
+    }
+
+    private static String getTextFromAnchor(Element anchor) {
+        return anchor.getElementsByClass("address").first().ownText();
     }
 }
