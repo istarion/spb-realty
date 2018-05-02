@@ -1,42 +1,120 @@
 package ru.compscicenter.spb_realty.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.compscicenter.spb_realty.model.GorodGovResponse;
 
 import javax.print.Doc;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
 public class GorodGovService {
+    private static OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build();
+
+    private static ObjectMapper jacksonMapper = new ObjectMapper();
+    static {
+        jacksonMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+
     public static String normalizeAdress(String address) {
-        Document doc = getBuildingDocument(address);
-        if (doc == null) {
+        GorodGovResponse gorodGovResponse = getBuildingObject(address);
+        if (gorodGovResponse == null) {
             return "NOT_FOUND";
         }
 
-        String normalizedAddress = doc.select("h1").first().text();
-        if (normalizedAddress.startsWith("Поиск дома")) {
-            return "NOT_FOUND";
-        }
-        return normalizedAddress;
+        return gorodGovResponse.getFullAddress();
     }
 
     public static String getEas(String address) {
-        Document doc = getBuildingDocument(address);
-        if (doc == null) {
+        GorodGovResponse gorodGovResponse = getBuildingObject(address);
+        if (gorodGovResponse == null) {
             return null;
         }
-        String uri = doc.baseUri();
-        String eas = uri.substring(uri.indexOf("/facilities/") + 12);
-        eas = eas.split("/", 2)[0];
-        return eas;
+        return String.valueOf(gorodGovResponse.getId());
+    }
+
+    private static GorodGovResponse getBuildingObject(String address) {
+        if (address.equals("NOT_FOUND")) {
+            return null;
+        }
+
+        Request request = new Request.Builder()
+                .url("https://gorod.gov.spb.ru/api/v3.1/address/search/?query=" + address)
+                .build();
+
+        try(Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                GorodGovResponse[] gorodGovResponses = jacksonMapper.readValue(
+                        response.body().string(), GorodGovResponse[].class
+                );
+
+                Set<String> addressSet = Arrays.stream(gorodGovResponses)
+                        .map(GorodGovResponse::getFullAddress)
+                        .collect(Collectors.toSet());
+
+                Optional<String> resolvedAddress = AddressResolverService.resolveFromSet(address, addressSet);
+                if (resolvedAddress.isPresent()) {
+                    return Arrays.stream(gorodGovResponses)
+                            .filter((resp) -> resp.getFullAddress().equals(resolvedAddress.get()))
+                            .map((resp) -> getBuildingById(resp.getId()))
+                            .findFirst()
+                            .get();
+                }
+
+            } else if (response.code() == 503) {
+                try {
+                    System.out.println("Throttling sleep!");
+                    Thread.sleep(100);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                return getBuildingObject(address);
+            }
+
+        } catch (SocketTimeoutException e ) {
+            return getBuildingObject(address);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static GorodGovResponse getBuildingById(int id){
+        Request request = new Request.Builder()
+                .url("https://gorod.gov.spb.ru/api/v3.1/maps/get_building_by_id/" + id)
+                .build();
+
+        try(Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                return jacksonMapper.readValue(
+                        response.body().string(), GorodGovResponse.class
+                );
+            }
+        } catch (SocketTimeoutException e ) {
+            return getBuildingById(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Cannot get building by id! Retrying");
+        return getBuildingById(id);
     }
 
     private static Document getBuildingDocument(String address) {
