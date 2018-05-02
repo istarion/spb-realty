@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="csv-id-adder" />
         <module name="parser-csv" />
         <module name="parser-gorod-gov-spb-ru" />
         <module name="parsermapinfo" />
@@ -13,6 +14,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="csv-id-adder" target="1.9" />
       <module name="parser-csv" target="1.9" />
       <module name="parser-gorod-gov-spb-ru" target="1.9" />
       <module name="parsermapinfo" target="1.9" />

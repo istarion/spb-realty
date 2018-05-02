@@ -60,6 +60,7 @@ public class MongoService {
             if (result == null) {
                 result = new Building();
                 result.setAddress(address);
+                result.addToAddressAliases(address);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,19 +72,18 @@ public class MongoService {
     public Building getBuildingByRawAddress(String address) {
         Building building = this.getBuildingByAlias(address);
         if (building == null) {
+            System.out.println("Normalizing via http");
             String normalizedAddress = GorodGovService.normalizeAdress(address);
             building = this.getBuildingOrCreate(normalizedAddress);
             building.addToAddressAliases(address);
 
-            if (!building.getAddressAliases().contains(normalizedAddress)) {
+            if (building.getEasCode() == null) {
                 building.setEasCode(GorodGovService.getEas(normalizedAddress));
-                building.addToAddressAliases(normalizedAddress);
             }
 
 
             if (building.getId() == null) {
-                this.buildingMongoCollection.insertOne(building);
-                building = this.getBuildingByAlias(address);
+                building = this.addNewBuilding(building);
             } else {
                 try{
                     this.buildingMongoCollection.updateOne(
@@ -98,9 +98,13 @@ public class MongoService {
                 }
 
             }
-            System.out.println("Normalizing via http");
         }
         return building;
+    }
+
+    synchronized public Building addNewBuilding(Building building) {
+        this.buildingMongoCollection.insertOne(building);
+        return this.getBuildingByAlias(building.getAddress());
     }
 
     private Building getBuildingByAlias(String alias) {

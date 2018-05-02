@@ -30,6 +30,7 @@
         <module>parser-gorod-gov-spb-ru</module>
         <module>parsermapinfo</module>
         <module>parser-csv</module>
+        <module>csv-id-adder</module>
     </modules>
 
     <dependencies>

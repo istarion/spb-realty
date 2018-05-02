@@ -34,7 +34,8 @@ public class GorodGovService {
             return null;
         }
         String uri = doc.baseUri();
-        String eas = uri.substring(uri.indexOf("/facilities/") + 12, uri.indexOf("/problems"));
+        String eas = uri.substring(uri.indexOf("/facilities/") + 12);
+        eas = eas.split("/", 2)[0];
         return eas;
     }
 

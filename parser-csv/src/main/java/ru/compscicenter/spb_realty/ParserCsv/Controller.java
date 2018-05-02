@@ -76,11 +76,7 @@ public class Controller<T extends CsvSource> {
 
             logger.fine("Update: " + building.getAddress());
             try {
-                if (building.getId() != null) {
-                    mongoService.getBuildingMongoCollection().updateOne(Filters.eq("_id", building.getId()), updates);
-                } else {
-                    mongoService.getBuildingMongoCollection().insertOne(building);
-                }
+                mongoService.getBuildingMongoCollection().updateOne(Filters.eq("_id", building.getId()), updates);
 
             } catch (Exception e) {
                 e.printStackTrace();
