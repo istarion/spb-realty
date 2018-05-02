@@ -31,7 +31,7 @@ public class Main {
             CSVParser records = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader().parse(in);
 
             List<String> newHeader = new LinkedList<>(records.getHeaderMap().keySet());
-            newHeader.addAll(List.of("FIAS_CODE", "EAS_CODE", "KADASTR_CODE"));
+            newHeader.addAll(List.of("FIAS_CODE", "EAS_CODE", "KADASTR_CODE", "KLADR_CODE"));
 
             CSVFormat printerFormat = CSVFormat.EXCEL.withDelimiter(';').withHeader(
                     newHeader.toArray(new String[0])

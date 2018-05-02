@@ -11,6 +11,7 @@ public final class Building {
     private String fiasCode;
     private String easCode;
     private String kadastrCode;
+    private String kladrCode;
 
     private Map<String,GorodGovRecord> gorodGov;
     private Map<String,RgisAddressRecord> rgisAddress;
@@ -99,6 +100,14 @@ public final class Building {
 
     public void setKadastrCode(String kadastrCode) {
         this.kadastrCode = kadastrCode;
+    }
+
+    public String getKladrCode() {
+        return kladrCode;
+    }
+
+    public void setKladrCode(String kladrCode) {
+        this.kladrCode = kladrCode;
     }
 
     @Override

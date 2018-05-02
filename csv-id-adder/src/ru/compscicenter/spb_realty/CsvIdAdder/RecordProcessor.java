@@ -31,6 +31,7 @@ class RecordProcessor {
         newRecord.add(currentBuilding.getFiasCode());
         newRecord.add(currentBuilding.getEasCode());
         newRecord.add(currentBuilding.getKadastrCode());
+        newRecord.add(currentBuilding.getKladrCode());
         printer.printRecord(newRecord);
 
         count.getAndIncrement();

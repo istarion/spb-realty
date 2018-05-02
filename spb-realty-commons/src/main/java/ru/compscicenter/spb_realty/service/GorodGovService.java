@@ -65,7 +65,7 @@ public class GorodGovService {
                 if (resolvedAddress.isPresent()) {
                     String href = severalHousesList.first().getElementsByTag("a").stream()
                             .filter((Element a) -> getTextFromAnchor(a).equals(resolvedAddress.get()))
-                            .map((Element a) -> "https://gorod.gov.spb.ru" + a.attr("href") + "info")
+                            .map((Element a) -> "https://gorod.gov.spb.ru" + a.attr("href") + "problems")
                             .findFirst().get();
 
                     doc = Jsoup.connect(href)

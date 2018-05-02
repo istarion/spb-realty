@@ -56,11 +56,16 @@ public class RgisAddressSource implements CsvSource<RgisAddressRecord> {
         if (fiasCode == null) {
             fiasCode = building.getFiasCode();
         }
+        String kladrCode = rgisAddressRecord.getKLADR_code();
+        if (kladrCode == null) {
+            kladrCode = building.getKladrCode();
+        }
 
         return Updates.combine(
                 Updates.set(key, rgisAddressRecord),
                 Updates.currentTimestamp("lastModified"),
-                Updates.set("fiasCode", fiasCode)
+                Updates.set("fiasCode", fiasCode),
+                Updates.set("kladrCode", kladrCode)
         );
     }
 
