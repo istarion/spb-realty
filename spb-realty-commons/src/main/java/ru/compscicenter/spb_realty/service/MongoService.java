@@ -10,6 +10,8 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import ru.compscicenter.spb_realty.model.Building;
 
+import java.util.Optional;
+
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -98,6 +100,33 @@ public class MongoService {
             }
         }
         return building;
+    }
+
+    public Optional<Building> getBuildingByFias(String fias) {
+        if (fias.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(
+                this.buildingMongoCollection.find(Filters.eq("fiasCode", fias)).first()
+        );
+    }
+
+    public Optional<Building> getBuildingByEas(String eas) {
+        if (eas.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(
+                this.buildingMongoCollection.find(Filters.eq("easCode", eas)).first()
+        );
+    }
+
+    public Optional<Building> getBuildingByKadastr(String kadastr) {
+        if (kadastr.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(
+                this.buildingMongoCollection.find(Filters.eq("kadastrCode", kadastr)).first()
+        );
     }
 
     synchronized public Building addNewBuilding(Building building) {

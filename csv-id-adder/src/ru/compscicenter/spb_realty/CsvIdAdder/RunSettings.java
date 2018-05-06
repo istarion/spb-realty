@@ -17,6 +17,15 @@ public class RunSettings {
     @Option(name = "--address", usage = "Address field")
     private String address = "ADDRESS";
 
+    @Option(name = "--fias", usage = "Fias field")
+    private String fias;
+
+    @Option(name = "--eas", usage = "Eas field")
+    private String eas;
+
+    @Option(name = "--kadastr", usage = "Kadastr field")
+    private String kadastr;
+
     public String getFilename() {
         return this.filename;
     }
@@ -31,5 +40,17 @@ public class RunSettings {
 
     public String getAddress() {
         return address;
+    }
+
+    public String getFias() {
+        return fias;
+    }
+
+    public String getEas() {
+        return eas;
+    }
+
+    public String getKadastr() {
+        return kadastr;
     }
 }
