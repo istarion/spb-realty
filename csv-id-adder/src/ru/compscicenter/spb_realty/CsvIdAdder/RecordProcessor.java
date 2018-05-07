@@ -14,11 +14,16 @@ class RecordProcessor {
     private CSVPrinter printer;
     private RunSettings settings;
     private AtomicLong count = new AtomicLong();
-    private MongoService mongoService = new MongoService();
+    private MongoService mongoService;
 
     RecordProcessor(RunSettings settings, CSVPrinter printer) {
         this.printer = printer;
         this.settings = settings;
+        this.mongoService = new MongoService(
+                settings.getHost(),
+                settings.getDatabase(),
+                settings.getCollection()
+        );
     }
 
     void process(CSVRecord record) throws IOException {

@@ -1,5 +1,6 @@
 package ru.compscicenter.spb_realty.service;
 
+import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoCollection;
@@ -9,6 +10,7 @@ import com.mongodb.client.model.Updates;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import ru.compscicenter.spb_realty.model.Building;
+import ru.compscicenter.spb_realty.model.KadastrCode;
 
 import java.util.Optional;
 
@@ -20,21 +22,24 @@ public class MongoService {
     private MongoClient mongoClient;
     private MongoDatabase database;
     private MongoCollection<Building> buildingMongoCollection;
-    private final String DATABASE_NAME = "test";
-    private final String BUILDINGS_COLLECTION_NAME = "spbRealty";
 
 
-    public MongoService() {
+    public MongoService(String host, String databaseName, String collectionName) {
         this.pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         this.mongoClient = new MongoClient(
-                "localhost",
+                host,
                 MongoClientOptions.builder().codecRegistry(this.pojoCodecRegistry).build()
         );
 
-        this.database = mongoClient.getDatabase(DATABASE_NAME);
-        this.buildingMongoCollection = this.database.getCollection(BUILDINGS_COLLECTION_NAME, Building.class);
+        this.database = mongoClient.getDatabase(databaseName);
+        this.buildingMongoCollection = this.database.getCollection(collectionName, Building.class);
+    }
+
+
+    public MongoService() {
+        this("localhost", "test", "spbRealty");
     }
 
     public CodecRegistry getPojoCodecRegistry() {
@@ -85,7 +90,7 @@ public class MongoService {
             if (building.getId() == null) {
                 building = this.addNewBuilding(building);
             } else {
-                try{
+                try {
                     this.buildingMongoCollection.updateOne(
                             Filters.eq("_id", building.getId()),
                             Updates.combine(
@@ -124,9 +129,16 @@ public class MongoService {
         if (kadastr.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.ofNullable(
-                this.buildingMongoCollection.find(Filters.eq("kadastrCode", kadastr)).first()
+
+        KadastrCode kadastrCode = new KadastrCode(kadastr);
+
+        Optional<Building> optionalBuilding = Optional.ofNullable(
+                this.buildingMongoCollection.find(
+                        Filters.regex("kadastrCode", kadastrCode.getRegexp())
+                ).first()
         );
+
+        return optionalBuilding;
     }
 
     synchronized public Building addNewBuilding(Building building) {
