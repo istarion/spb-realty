@@ -47,6 +47,12 @@ class RecordProcessor {
         newRecord.add(currentBuilding.getKadastrCode());
         newRecord.add(currentBuilding.getKladrCode());
         printer.printRecord(newRecord);
+        System.out.println(address + " -> [" +
+                currentBuilding.getFiasCode() + ' ' +
+                currentBuilding.getEasCode() + ' ' +
+                currentBuilding.getKadastrCode() + ' ' +
+                currentBuilding.getKladrCode() + ']'
+        );
 
         count.getAndIncrement();
     }
